@@ -1,12 +1,15 @@
 package com.softwarelembretes.api.Service;
 
+import com.softwarelembretes.api.DTO.LembreteDTO;
 import com.softwarelembretes.api.Entity.Pessoa;
 import com.softwarelembretes.api.Repository.PessoaRepository;
 import com.softwarelembretes.api.DTO.PessoaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PessoaService {
@@ -14,21 +17,20 @@ public class PessoaService {
     private  PessoaRepository pessoaRepository;
 
 
+    public Pessoa findNome(String nomeCompleto) {
+        Pessoa pessoas = pessoaRepository.findByNomeCompleto(nomeCompleto);
+        if (pessoas != null) {
+            return pessoas;
+        } else {
+            throw new RuntimeException("Nenhuma pessoa encontrada com o nome completo: " + nomeCompleto);
+        }
+    }
     public PessoaDTO findById(Long id) {
         Optional<Pessoa> pessoaOptional = pessoaRepository.findById(id);
         if (pessoaOptional.isPresent()) {
             return convertToDTO(pessoaOptional.get());
         } else {
             throw new RuntimeException("Pessoa não encontrada com o ID: " + id);
-        }
-    }
-
-    public PessoaDTO findByNomeCompleto(String nomeCompleto) {
-        Pessoa pessoa = pessoaRepository.findByNomeCompleto(nomeCompleto);
-        if (pessoa != null) {
-            return convertToDTO(pessoa);
-        } else {
-            throw new RuntimeException("Pessoa não encontrada com o nome completo: " + nomeCompleto);
         }
     }
 
@@ -49,8 +51,13 @@ public class PessoaService {
     }
 
     private PessoaDTO convertToDTO(Pessoa pessoa) {
-        return new PessoaDTO(pessoa.getId(), pessoa.getNomeCompleto());
+        List<LembreteDTO> lembretesDTO = pessoa.getLembretes().stream()
+                .map(lembrete -> new LembreteDTO(lembrete.getId(), lembrete.getDescricao(), lembrete.getPessoaId()))
+                .collect(Collectors.toList());
+
+        return new PessoaDTO(pessoa.getId(), pessoa.getNomeCompleto(), lembretesDTO);
     }
+
     public void delete(Long id) {
         Optional<Pessoa> pessoaOptional = pessoaRepository.findById(id);
         if (pessoaOptional.isPresent()) {

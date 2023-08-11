@@ -13,11 +13,12 @@ public class LembreteDTO {
     public LembreteDTO(Long id, String descricao, Pessoa pessoa) {
         this.id = id;
         this.descricao = descricao;
-        this.pessoaId = pessoaId;
+        this.pessoaId = pessoa;
     }
 
     public LembreteDTO() {
     }
 
-
+    public void setPessoaId(Pessoa pessoaId) {
+    }
 }

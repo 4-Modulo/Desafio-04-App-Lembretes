@@ -1,17 +1,19 @@
 package com.softwarelembretes.api.DTO;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter @Setter
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PessoaDTO {
     private Long id;
     private String nomeCompleto;
+    private List<LembreteDTO> lembretes;
 
     public PessoaDTO(Long id, String nomeCompleto) {
         this.id = id;
         this.nomeCompleto = nomeCompleto;
     }
-
-    // Outros construtores ou métodos de conversão se necessário
 }

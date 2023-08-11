@@ -6,6 +6,7 @@ import com.softwarelembretes.api.DTO.LembreteDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,6 +16,13 @@ public class LembreteService {
     @Autowired
     private LembreteRepository lembreteRepository;
 
+
+    public List<Lembrete> findAllByNomeCompleto(String nomeCompleto) {
+            List<Lembrete> lembretes = lembreteRepository.findByPessoaIdNomeCompleto(nomeCompleto);
+
+        return lembretes;
+    }
+
     public LembreteDTO findById(Long id) {
         Optional<Lembrete> lembreteOptional = lembreteRepository.findById(id);
         if (lembreteOptional.isPresent()) {
@@ -23,12 +31,10 @@ public class LembreteService {
             throw new RuntimeException("Lembrete não encontrado com o ID: " + id);
         }
     }
-    public LembreteDTO create(LembreteDTO lembreteDTO) {
-        Lembrete lembrete = new Lembrete();
-        lembrete.setDescricao(lembreteDTO.getDescricao());
+    public Lembrete create(Lembrete lembrete) {
 
-        Lembrete savedLembrete = lembreteRepository.save(lembrete);
-        return convertToDTO(savedLembrete);
+        return  lembreteRepository.save(lembrete);
+
     }
     public LembreteDTO update(Long id, LembreteDTO lembreteAtualizadoDTO) {
         Lembrete lembreteExistente = lembreteRepository.findById(id)
@@ -41,14 +47,7 @@ public class LembreteService {
     }
 
     public List<LembreteDTO> findByPessoaId(Long pessoaId) {
-        List<Lembrete> lembretes = lembreteRepository.findByPessoaId_Id(pessoaId); // Assuming you have a proper relationship between Pessoa and Lembrete
-
-        return lembretes.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }
-    public List<LembreteDTO> findByPessoaNomeCompleto(String nomeCompleto) {
-        List<Lembrete> lembretes = lembreteRepository.findByPessoaId_NomeCompleto(nomeCompleto);
+        List<Lembrete> lembretes = lembreteRepository.findByPessoaId_Id(pessoaId);
 
         return lembretes.stream()
                 .map(this::convertToDTO)
@@ -56,9 +55,7 @@ public class LembreteService {
     }
 
 
-
-
-    private LembreteDTO convertToDTO(Lembrete lembrete) {
+    private  LembreteDTO convertToDTO(Lembrete lembrete) {
         LembreteDTO lembreteDTO = new LembreteDTO();
         lembreteDTO.setId(lembrete.getId());
         lembreteDTO.setDescricao(lembrete.getDescricao());
@@ -74,4 +71,6 @@ public class LembreteService {
             throw new RuntimeException("Lembrete não encontrado com o ID: " + id);
         }
     }
+
+
 }

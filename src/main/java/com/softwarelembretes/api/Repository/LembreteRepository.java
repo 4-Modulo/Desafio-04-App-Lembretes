@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface LembreteRepository extends JpaRepository<Lembrete, Long> {
     List<Lembrete> findByPessoaId_Id(Long pessoaId);
-    List<Lembrete> findByPessoaId_NomeCompleto(String nomeCompleto);
+    List<Lembrete> findByPessoaIdNomeCompleto(String nomeCompleto);
 }

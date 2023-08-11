@@ -3,6 +3,8 @@ package com.softwarelembretes.api.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,10 +19,9 @@ public class Pessoa {
     @Column(name = "nomeCompleto")
     private String nomeCompleto;
     @Getter @Setter
-    @OneToMany
-    @JoinColumn(name = "lembretes")
-    private List<Lembrete> lembretes;
-
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "pessoaId")
+    private List<Lembrete> lembretes = new ArrayList<>();
 
 
 }
