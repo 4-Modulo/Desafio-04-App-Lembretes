@@ -18,29 +18,57 @@ import java.util.List;
 public class LembreteController {
 
     @Autowired
-    private LembreteService lembreteService;
-    @Autowired
-    private LembreteRepository lembreteRepository;
+    private LembreteService service;
 
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findByIdPath(@PathVariable("id") final Long id) {
-        final Lembrete lembrete = this.lembreteRepository.findById(id).orElse(null);
-
-        return lembrete == null
-                ? ResponseEntity.badRequest().body("Condutor não encontrado")
-                : ResponseEntity.ok(lembrete);
+    @PostMapping("/cadastrar")
+    public ResponseEntity<?> post(@RequestBody LembreteDTO lembrete){
+        try {
+            return ResponseEntity.ok(service.post(lembrete));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    @PostMapping
-    public ResponseEntity<String> create(@RequestBody final Lembrete lembrete){
+    @GetMapping("/all")
+    public ResponseEntity<?> getAll() {
         try{
-            this.lembreteService.create(lembrete);
-            return ResponseEntity.ok("Registro cadastrado com sucesso");
-        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.ok(service.findAll());
+        }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (RuntimeException e){
-            return ResponseEntity.internalServerError().body("Error: " + e.getMessage());
+        }
+    }
+    @GetMapping("/pessoa")
+    public ResponseEntity<?> getByNomePessoa(@RequestParam String nome){
+        try{
+            return ResponseEntity.ok(service.getByNomePessoa(nome));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/id")
+    public ResponseEntity<?> getById(@RequestParam Long id) {
+        try{
+            return ResponseEntity.ok(service.getById(id));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PutMapping("/editar")
+    public ResponseEntity<?> update(@RequestParam Long id, @RequestBody LembreteDTO lembrete){
+        try{
+            return ResponseEntity.ok(service.update(id, lembrete));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @DeleteMapping("/deletar")
+    public ResponseEntity<?> delete(@RequestParam Long id){
+        try{
+            service.delete(id);
+            return ResponseEntity.ok(String.format("Pessoa com ID %s deletado com sucesso!", id));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

@@ -9,7 +9,7 @@ import org.springframework.web.service.annotation.GetExchange;
 @Table(name = "Lembrete",schema = "public")
 public class Lembrete {
     @Id
-    @Getter
+    @Getter @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
     private Long id;

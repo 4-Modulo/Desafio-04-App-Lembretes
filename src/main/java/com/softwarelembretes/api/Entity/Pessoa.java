@@ -11,13 +11,13 @@ import java.util.List;
 @Table(name = "Pessoa", schema = "public")
 public class Pessoa {
     @Id
-    @Getter
+    @Getter @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
     @Getter @Setter
     @Column(name = "nomeCompleto")
-    private String nomeCompleto;
+    private String nome;
     @Getter @Setter
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "pessoaId")

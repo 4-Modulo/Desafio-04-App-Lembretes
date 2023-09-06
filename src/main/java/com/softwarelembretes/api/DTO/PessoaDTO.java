@@ -9,11 +9,11 @@ import java.util.List;
 @AllArgsConstructor
 public class PessoaDTO {
     private Long id;
-    private String nomeCompleto;
+    private String nome;
     private List<LembreteDTO> lembretes;
 
-    public PessoaDTO(Long id, String nomeCompleto) {
+    public PessoaDTO(Long id, String nome) {
         this.id = id;
-        this.nomeCompleto = nomeCompleto;
+        this.nome = nome;
     }
 }

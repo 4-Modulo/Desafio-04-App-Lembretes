@@ -4,8 +4,10 @@ import com.softwarelembretes.api.DTO.LembreteDTO;
 import com.softwarelembretes.api.Entity.Pessoa;
 import com.softwarelembretes.api.Repository.PessoaRepository;
 import com.softwarelembretes.api.DTO.PessoaDTO;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,56 +16,49 @@ import java.util.stream.Collectors;
 @Service
 public class PessoaService {
     @Autowired
-    private  PessoaRepository pessoaRepository;
-
-
-    public Pessoa findNome(String nomeCompleto) {
-        Pessoa pessoas = pessoaRepository.findByNomeCompleto(nomeCompleto);
-        if (pessoas != null) {
-            return pessoas;
-        } else {
-            throw new RuntimeException("Nenhuma pessoa encontrada com o nome completo: " + nomeCompleto);
-        }
+    private PessoaRepository repository;
+    public PessoaDTO toPessoaDTO(Pessoa pessoa){
+        PessoaDTO pessoaDTO = new PessoaDTO();
+        pessoaDTO.setId(pessoa.getId());
+        pessoaDTO.setNome(pessoa.getNome());
+        return pessoaDTO;
     }
-    public PessoaDTO findById(Long id) {
-        Optional<Pessoa> pessoaOptional = pessoaRepository.findById(id);
-        if (pessoaOptional.isPresent()) {
-            return convertToDTO(pessoaOptional.get());
-        } else {
-            throw new RuntimeException("Pessoa não encontrada com o ID: " + id);
-        }
-    }
-
-    public PessoaDTO create(PessoaDTO pessoaDTO) {
+    public Pessoa toPessoa(PessoaDTO pessoaDTO){
         Pessoa pessoa = new Pessoa();
-        pessoa.setNomeCompleto(pessoaDTO.getNomeCompleto());
-
-        return convertToDTO(pessoaRepository.save(pessoa));
+        pessoa.setId(pessoaDTO.getId());
+        pessoa.setNome(pessoaDTO.getNome());
+        return pessoa;
     }
 
-    public PessoaDTO update(Long id, PessoaDTO pessoaAtualizadaDTO) {
-        Pessoa pessoaExistente = pessoaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pessoa não encontrada com o ID: " + id));
-
-        pessoaExistente.setNomeCompleto(pessoaAtualizadaDTO.getNomeCompleto());
-
-        return convertToDTO(pessoaRepository.save(pessoaExistente));
+    @Transactional
+    public PessoaDTO post(PessoaDTO pessoa){
+        Assert.isTrue(pessoa.getNome().length() <= 50, "O nome da pessoa deve ter apenas 50 caracteres");
+        Assert.isTrue(repository.findByNome(pessoa.getNome()).isEmpty(), String.format("A pessoa %s já existe!", pessoa.getNome()));
+        return toPessoaDTO(repository.save(toPessoa(pessoa)));
     }
-
-    private PessoaDTO convertToDTO(Pessoa pessoa) {
-        List<LembreteDTO> lembretesDTO = pessoa.getLembretes().stream()
-                .map(lembrete -> new LembreteDTO(lembrete.getId(), lembrete.getDescricao(), lembrete.getPessoaId()))
-                .collect(Collectors.toList());
-
-        return new PessoaDTO(pessoa.getId(), pessoa.getNomeCompleto(), lembretesDTO);
+    public List<PessoaDTO> findAll(){
+        return repository.findAll().stream().map(this::toPessoaDTO).toList();
     }
-
-    public void delete(Long id) {
-        Optional<Pessoa> pessoaOptional = pessoaRepository.findById(id);
-        if (pessoaOptional.isPresent()) {
-            pessoaRepository.delete(pessoaOptional.get());
-        } else {
-            throw new RuntimeException("Pessoa não encontrada com o ID: " + id);
-        }
+    public PessoaDTO getById(Long id){
+        Pessoa pessoaById = repository.findById(id).orElse(null);
+        Assert.notNull(pessoaById, String.format("Pessoa com ID %s não existe!", id));
+        return toPessoaDTO(pessoaById);
+    }
+    public PessoaDTO getByNome(String nome){
+        Pessoa pessoaByNome = repository.findByNomeUnique(nome);
+        Assert.notNull(pessoaByNome, String.format("Pessoa com nome %s não existe!", nome));
+        return toPessoaDTO(pessoaByNome);
+    }
+    @Transactional
+    public PessoaDTO update(Long id, PessoaDTO pessoa){
+        Pessoa pessoaById = repository.findById(id).orElse(null);
+        Assert.notNull(pessoaById, String.format("Pessoa com ID %s não existe!", id));
+        return toPessoaDTO(repository.save(toPessoa(pessoa)));
+    }
+    @Transactional
+    public void delete(Long id){
+        Pessoa pessoaById = repository.findById(id).orElse(null);
+        Assert.notNull(pessoaById, String.format("Pessoa com ID %s não existe!", id));
+        repository.deleteById(id);
     }
 }
