@@ -1,20 +1,13 @@
 package com.softwarelembretes.api.Controller;
 
 import com.softwarelembretes.api.DTO.LembreteDTO;
-import com.softwarelembretes.api.Entity.Lembrete;
-import com.softwarelembretes.api.Entity.Pessoa;
-import com.softwarelembretes.api.Repository.LembreteRepository;
 import com.softwarelembretes.api.Service.LembreteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@Controller
-@RequestMapping("/lembrete")
+@RestController
+@RequestMapping("/lembretes")
 public class LembreteController {
 
     @Autowired
@@ -29,7 +22,7 @@ public class LembreteController {
         }
     }
 
-    @GetMapping("/all")
+    @GetMapping("/todos")
     public ResponseEntity<?> getAll() {
         try{
             return ResponseEntity.ok(service.findAll());
@@ -71,5 +64,4 @@ public class LembreteController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 }

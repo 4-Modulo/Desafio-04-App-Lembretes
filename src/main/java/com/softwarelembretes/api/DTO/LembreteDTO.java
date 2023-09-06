@@ -1,24 +1,32 @@
 package com.softwarelembretes.api.DTO;
-
 import com.softwarelembretes.api.Entity.Pessoa;
-import lombok.*;
-
-@Getter
-@Setter
 public class LembreteDTO {
     private Long id;
-    private String descricao;
-    private Pessoa pessoaId;
 
-    public LembreteDTO(Long id, String descricao, Pessoa pessoa) {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
         this.id = id;
-        this.descricao = descricao;
-        this.pessoaId = pessoa;
     }
 
-    public LembreteDTO() {
+    public String getRecado() {
+        return recado;
     }
 
-    public void setPessoaId(Pessoa pessoaId) {
+    public void setRecado(String recado) {
+        this.recado = recado;
     }
+
+    public Pessoa getPessoa() {
+        return pessoa;
+    }
+
+    public void setPessoa(Pessoa pessoa) {
+        this.pessoa = pessoa;
+    }
+
+    private String recado;
+    private Pessoa pessoa;
 }

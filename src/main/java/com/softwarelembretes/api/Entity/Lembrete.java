@@ -3,21 +3,24 @@ package com.softwarelembretes.api.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.service.annotation.GetExchange;
 
 @Entity
-@Table(name = "Lembrete",schema = "public")
+@Table(name = "lembretes")
 public class Lembrete {
     @Id
-    @Getter @Setter
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @GeneratedValue
+    @Getter
+    @Setter
     private Long id;
+
     @Getter @Setter
-    @Column(name = "Desacricao")
-    private String descricao;
-    @Getter @Setter
+    @Column(nullable = false)
+    private String recado;
+
+    @Getter
+    @Setter
     @ManyToOne
-    @JoinColumn(name = "pessoaId")
-    private Pessoa pessoaId;
+    @JoinColumn
+    private Pessoa pessoa;
+
 }

@@ -1,22 +1,15 @@
 package com.softwarelembretes.api.Controller;
 
-import com.softwarelembretes.api.DTO.LembreteDTO;
 import com.softwarelembretes.api.DTO.PessoaDTO;
-import com.softwarelembretes.api.Entity.Lembrete;
-import com.softwarelembretes.api.Entity.Pessoa;
-import com.softwarelembretes.api.Repository.PessoaRepository;
 import com.softwarelembretes.api.Service.PessoaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@Controller
-@RequestMapping("/pessoa")
+@RestController
+@RequestMapping("/pessoas")
 public class PessoaController {
+
     @Autowired
     private PessoaService service;
 
@@ -71,5 +64,4 @@ public class PessoaController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 }

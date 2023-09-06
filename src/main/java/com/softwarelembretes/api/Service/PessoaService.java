@@ -1,16 +1,15 @@
 package com.softwarelembretes.api.Service;
 
-import com.softwarelembretes.api.DTO.LembreteDTO;
-import com.softwarelembretes.api.Entity.Pessoa;
 import com.softwarelembretes.api.Repository.PessoaRepository;
 import com.softwarelembretes.api.DTO.PessoaDTO;
-import jakarta.transaction.Transactional;
+import com.softwarelembretes.api.Entity.Pessoa;
+import com.softwarelembretes.api.Repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
